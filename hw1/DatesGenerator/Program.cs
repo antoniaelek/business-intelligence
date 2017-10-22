@@ -4,6 +4,8 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Configuration;
 using static JayMuntzCom.HolidayCalculator;
+using System.Data.SqlClient;
+using Dapper.Contrib.Extensions;
 
 namespace DatesGenerator
 {
@@ -14,8 +16,15 @@ namespace DatesGenerator
             var startYear = int.Parse(ConfigurationManager.AppSettings["startYear"]);
             var endYear = int.Parse(ConfigurationManager.AppSettings["endYear"]);
             var holidaysDefinition = ConfigurationManager.AppSettings["holidaysConfig"];
+            var connectionString = ConfigurationManager.ConnectionStrings["database"].ConnectionString;
 
-            var days = GetDaysInYears(startYear, endYear, holidaysDefinition);
+            var dates = GetDaysInYears(startYear, endYear, holidaysDefinition);
+
+            using (var sqlConnection = new SqlConnection(connectionString))
+            {
+                sqlConnection.Open();
+                sqlConnection.Insert(dates);
+            }
         }
 
         private static List<Day> GetDaysInYears(int startYear, int endYear, string holidaysDefinition)

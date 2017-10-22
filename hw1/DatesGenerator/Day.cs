@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Dapper.Contrib.Extensions;
+using System;
 using static DatesGenerator.Utils;
 using static JayMuntzCom.HolidayCalculator;
 
 namespace DatesGenerator
 {
+    [Table("dDate")]
     public class Day
     {
         public Day(DateTime dt)
@@ -15,23 +17,24 @@ namespace DatesGenerator
             DayPart = dt.Day;
             MonthPart = dt.Month;
             YearPart = dt.Year;
-            Quarter = ((dt.Month - (dt.Month % 3)) / 3) + 1;
+            Quarter = (dt.Month + 2) / 3;
             WeekdayOrdNum = (int)dt.DayOfWeek == 0 ? 7 : (int)dt.DayOfWeek;
             WeekdayName = dt.DayOfWeek.ToString();
             MonthName = dt.ToString("MMMM");
-            IsWorkDay = WeekdayOrdNum < 6 ? YesOrNo.Yes : YesOrNo.No;
-            IsLastDayInMonth = dt.Day == DateTime.DaysInMonth(dt.Year, dt.Month) ? YesOrNo.Yes : YesOrNo.No;
+            IsWorkDay = WeekdayOrdNum < 6 ? YesOrNo.Yes.ToString() : YesOrNo.No.ToString();
+            IsLastDayInMonth = dt.Day == DateTime.DaysInMonth(dt.Year, dt.Month) ? YesOrNo.Yes.ToString() : YesOrNo.No.ToString();
             Season = dt.GetSeason();
-            IsHoliday = YesOrNo.No;
+            IsHoliday = YesOrNo.No.ToString();
         }
 
         public Day(DateTime dt, Holiday holiday) : this(dt)
         {
-            IsWorkDay = YesOrNo.No;
-            IsHoliday = YesOrNo.Yes;
+            IsWorkDay = YesOrNo.No.ToString();
+            IsHoliday = YesOrNo.Yes.ToString();
             HolidayName = holiday.Name;
         }
 
+        [ExplicitKey]
         public string DateId { get; }
         public DateTime Date { get; }
         public string Type { get; set; }
@@ -43,11 +46,11 @@ namespace DatesGenerator
         public int WeekdayOrdNum { get; set; }
         public string WeekdayName { get; set; }
         public string MonthName { get; set; }
-        public YesOrNo IsWorkDay { get; set; }
-        public YesOrNo IsLastDayInMonth { get; set; }
+        public string IsWorkDay { get; set; }
+        public string IsLastDayInMonth { get; set; }
         public Season Season { get; set; }
         public string Event { get; set; } = string.Empty;
-        public YesOrNo IsHoliday { get; set; }
+        public string IsHoliday { get; set; }
         public string HolidayName { get; set; } = string.Empty;
 
     }
