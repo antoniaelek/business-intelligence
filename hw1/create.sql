@@ -1,6 +1,6 @@
 CREATE TABLE dDate(
 	[DateId] int PRIMARY KEY,
-	[Date] datetime,
+	[Date] date,
 	[Type] nvarchar(20),
 	[DayMonthYear] varchar(20),
 	[DayPart] int,
