@@ -19,6 +19,9 @@ namespace DatesGenerator
             var connectionString = ConfigurationManager.ConnectionStrings["database"].ConnectionString;
 
             var dates = GetDaysInYears(startYear, endYear, holidaysDefinition);
+            dates.Add(new Day("Unknown") { Date = new DateTime(9999, 12, 29) });
+            dates.Add(new Day("Error"){ Date = new DateTime(9999, 12, 30) });
+            dates.Add(new Day("Not yet happened") { Date = new DateTime(9999, 12, 31) });
 
             using (var sqlConnection = new SqlConnection(connectionString))
             {

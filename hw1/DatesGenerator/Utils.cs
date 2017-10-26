@@ -24,7 +24,7 @@ namespace DatesGenerator
 
         public static Season GetSeason(this DateTime date)
         {
-            float value = (float)date.Month + date.Day / 100;   // <month>.<day(2 digit)>
+            float value = (float)date.Month + (float)date.Day / 100;   // <month>.<day(2 digit)>
             if (value < 3.21 || value >= 12.22) return Season.Winter;
             if (value < 6.21) return Season.Spring;
             if (value < 9.23) return Season.Summer;

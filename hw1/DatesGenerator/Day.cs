@@ -8,9 +8,13 @@ namespace DatesGenerator
     [Table("dDate")]
     public class Day
     {
+        public Day(string specialEntryType)
+        {
+            Type = specialEntryType;
+        }
+
         public Day(DateTime dt)
         {
-            DateId = $"{dt.Year}{dt.Month.ToString("00")}{dt.Day.ToString("00")}";
             Date = dt;
             Type = "Date";
             DayMonthYear = ($"{dt.Day.ToString("00")}.{dt.Month.ToString("00")}.{dt.Year}.");
@@ -22,9 +26,10 @@ namespace DatesGenerator
             WeekdayName = dt.DayOfWeek.ToString();
             MonthName = dt.ToString("MMMM");
             IsWorkDay = WeekdayOrdNum < 6 ? YesOrNo.Yes.ToString() : YesOrNo.No.ToString();
-            IsLastDayInMonth = dt.Day == DateTime.DaysInMonth(dt.Year, dt.Month) ? YesOrNo.Yes.ToString() : YesOrNo.No.ToString();
-            Season = dt.GetSeason();
             IsHoliday = YesOrNo.No.ToString();
+            IsLastDayInMonth = dt.Day == DateTime.DaysInMonth(dt.Year, dt.Month) ? YesOrNo.Yes.ToString() : YesOrNo.No.ToString();
+            Season = dt.GetSeason().ToString();
+            Event = "No event";
         }
 
         public Day(DateTime dt, Holiday holiday) : this(dt)
@@ -35,23 +40,23 @@ namespace DatesGenerator
         }
 
         [ExplicitKey]
-        public string DateId { get; }
-        public DateTime Date { get; }
+        public string DateId { get { return $"{Date.Year}{Date.Month.ToString("00")}{Date.Day.ToString("00")}"; } }
+        public DateTime Date { get; set; }
         public string Type { get; set; }
-        public string DayMonthYear { get; }
-        public int DayPart { get; }
-        public int MonthPart { get; }
-        public int YearPart { get; }
-        public int Quarter { get; }
-        public int WeekdayOrdNum { get; set; }
-        public string WeekdayName { get; set; }
-        public string MonthName { get; set; }
-        public string IsWorkDay { get; set; }
-        public string IsLastDayInMonth { get; set; }
-        public Season Season { get; set; }
-        public string Event { get; set; } = string.Empty;
-        public string IsHoliday { get; set; }
-        public string HolidayName { get; set; } = string.Empty;
+        public string DayMonthYear { get; } = "N/A";
+        public int DayPart { get; } = -1;
+        public int MonthPart { get; } = -1;
+        public int YearPart { get; } = -1;
+        public int Quarter { get; } = -1;
+        public int WeekdayOrdNum { get; set; } = -1;
+        public string WeekdayName { get; set; } = "N/A";
+        public string MonthName { get; set; } = "N/A";
+        public string IsWorkDay { get; set; } = "N/A";
+        public string IsLastDayInMonth { get; set; } = "N/A";
+        public string Season { get; set; } = "N/A";
+        public string Event { get; set; } = "N/A";
+        public string IsHoliday { get; set; } = "N/A";
+        public string HolidayName { get; set; } = "N/A";
 
     }
 }
