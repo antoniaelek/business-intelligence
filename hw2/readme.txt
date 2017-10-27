@@ -1,0 +1,1 @@
+Kreirana je dimenzijska tablica `dDate` te je napunjena podacima. SQL kod za kreiranje i punjenje tablice podacima nalazi se u datoteci `create.sql`.
