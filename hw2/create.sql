@@ -3,7 +3,7 @@ CREATE TABLE [dbo].[dTimeOfDay](
 	[Type] [nvarchar](20) NULL,
 	[MinutesCount] [int] NULL,
 	[SecondsCount] [int] NULL,
-	[Time] [time](7) NULL,
+	[Time] [time] NULL,
 	[HoursPart] [int] NULL,
 	[MinutesPart] [int] NULL,
 	[SecondsPart] [int] NULL,
@@ -14,25 +14,25 @@ DECLARE @time DATETIME = '00:00:00.00';
 WHILE @time <= '23:59:59.00'
 BEGIN
 	INSERT INTO dTimeOfDay(
-	  [Type]
-	, [MinutesCount]
-	, [SecondsCount]
-	, [Time]
-	, [HoursPart]
-	, [MinutesPart]
-	, [SecondsPart]  
-	, [Period]
-	)VALUES(
-	  'Time'
-	, DATEPART(hh,@time)*60+DATEPART(n,@time)
-	, DATEPART(hh,@time)*3600+DATEPART(n,@time)*60+DATEPART(ss,@time)
-	, @time
-	, DATEPART(hh,@time)
-	, DATEPART(n,@time)
-	, DATEPART(ss,@time)
-	, null
+		  [Type]
+		, [MinutesCount]
+		, [SecondsCount]
+		, [Time]
+		, [HoursPart]
+		, [MinutesPart]
+		, [SecondsPart]  
+		, [Period]
+	) VALUES (
+		  'Time'
+		, DATEPART(hh, @time) * 60 + DATEPART(n, @time)
+		, DATEPART(hh, @time) * 3600 + DATEPART(n, @time) * 60 + DATEPART(ss, @time)
+		, @time
+		, DATEPART(hh, @time)
+		, DATEPART(n, @time)
+		, DATEPART(ss, @time)
+		, null
 	);
-	SET @time = DATEADD(ss,1,@time);
+	SET @time = DATEADD(ss, 1, @time);
 END;
 
 UPDATE [dbo].[dTimeOfDay] SET [Period] = 'Night' WHERE HoursPart IN (0,1,2,3,4,22,23);
