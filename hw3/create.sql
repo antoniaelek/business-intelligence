@@ -103,6 +103,7 @@ CREATE TABLE [dw].fOrderItem(
 	[Quantity] [smallint] NOT NULL,
 	[DiscountValue] [real] NOT NULL,
 	[DiscountID] int not null foreign key references [dw].dDiscount([DiscountID]),
+	[DiscountIntervalID] [int] NOT NULL foreign key references [dw].dDiscountInterval([DiscountID]),
 	[TotalPrice] [money] NOT NULL,
 	[TotalPriceWithDiscount] [money] NOT NULL,
 	[CustomerID] [int] NOT NULL foreign key references [dw].dCustomer([CustomerID]),

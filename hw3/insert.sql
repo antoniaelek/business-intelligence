@@ -84,7 +84,8 @@ BEGIN
 	);
 	SET @cnt = @cnt + 1;
 END;
-INSERT INTO [dw].dDiscountInterval([DiscountValue], [Interval]) VALUES (1.00	,'1.00');
+INSERT INTO [dw].dDiscountInterval([DiscountValue], [Interval]) VALUES (1.00,'1.00');
+INSERT INTO [dw].dDiscountInterval([DiscountValue], [Interval]) VALUES (-1, 'unknown');
 INSERT INTO [dw].dDiscountInterval([DiscountValue], [Interval]) VALUES (-1, 'error');
 -------------------------------------------------------------------------------
 --								    dEmployee								 --
@@ -338,6 +339,7 @@ INSERT INTO [dw].[fOrderItem]
            ,[Quantity]
            ,[DiscountValue]
            ,[DiscountID]
+		   ,[DiscountIntervalID]
            ,[TotalPrice]
            ,[TotalPriceWithDiscount]
            ,[CustomerID]
@@ -360,6 +362,7 @@ INSERT INTO [dw].[fOrderItem]
 		  ,[rel].[OrderItems].[Quantity]
 		  ,[rel].[OrderItems].[Discount]
 		  ,COALESCE([dw].[dDiscount].[DiscountID], 1) as DiscountID
+		  ,COALESCE([dw].[dDiscountInterval].[DiscountID], 102)
 		  ,[rel].[OrderItems].[UnitPrice]*[rel].[OrderItems].[Quantity] as TotalPrice
 		  ,([rel].[OrderItems].[UnitPrice]-[rel].[OrderItems].[UnitPrice]*[Discount])*[rel].[OrderItems].[Quantity] as TotalPriceWithDiscount
 		  ,[dw].[fOrder].[CustomerID]
@@ -379,3 +382,4 @@ INSERT INTO [dw].[fOrderItem]
 		  FROM [rel].[OrderItems] JOIN [dw].[fOrder] ON [rel].[OrderItems].[OrderID] = [dw].[fOrder].[OrderDBID] 
 								  JOIN [dw].[dProduct] ON [rel].[OrderItems].[ProductID] = [dw].[dProduct].[ProductDBID]
 								  LEFT OUTER JOIN [dw].[dDiscount] ON [rel].[OrderItems].[DiscountDesc] = [dw].[dDiscount].[DiscountDesc]
+								  LEFT OUTER JOIN [dw].[dDiscountInterval] ON round([rel].[OrderItems].[Discount],2) = round([dw].[dDiscountInterval].[DiscountValue],2)
