@@ -1,0 +1,11 @@
+DROP TABLE fOrderItem
+DROP TABLE fOrder
+DROP TABLE dCustomer
+DROP TABLE dCity
+DROP TABLE dDiscountInterval
+DROP TABLE dShipper
+DROP TABLE dPaymentMethod
+DROP TABLE dFreightInterval
+DROP TABLE dEmployee
+DROP TABLE dDiscount
+DROP TABLE dProduct
