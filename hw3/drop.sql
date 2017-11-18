@@ -1,5 +1,6 @@
 DROP TABLE [dw].[fOrderItem]
 DROP TABLE [dw].[fOrder]
+DROP TABLE [dw].[dShipAddress]
 DROP TABLE [dw].[dCustomer]
 DROP TABLE [dw].[dCity]
 DROP TABLE [dw].[dDiscountInterval]

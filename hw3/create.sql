@@ -73,6 +73,11 @@ CREATE TABLE [dw].dProduct(
 	[UnitPrice] [money] NULL,
 	[UnitsInStock] [smallint] NULL
 )
+CREATE TABLE [dw].[dShipAddress](
+	[AddressID] int identity(1,1) primary key,
+	[Address] [nvarchar](60) NULL
+)
+
 CREATE TABLE [dw].fOrder(
 	[OrderID] int identity(1,1) primary key,
 	[OrderDBID] [int] NOT NULL,
@@ -89,7 +94,7 @@ CREATE TABLE [dw].fOrder(
 	[ShipCityID] [int] NOT NULL foreign key references [dw].dCity([CityID]),
 	[ShipperID] [int] NOT NULL foreign key references [dw].dShipper([ShipperID]),
 	[ShipName] [nvarchar](40) NOT NULL,
-	[ShipAddress] [nvarchar](60) NOT NULL,
+	[ShipAddressID] int NOT NULL foreign key references [dw].[dShipAddress]([AddressID]),
 	[Freight] [money] NULL,
 	[DeliveryDays] int NULL,
 	[OrderPrice] money,
@@ -118,6 +123,6 @@ CREATE TABLE [dw].fOrderItem(
 	[ShippedTimeID] [int] NOT NULL foreign key references [dw].dTimeOfDay([TimeOfDayId]),
 	[ShipperID] [int] NOT NULL foreign key references [dw].dShipper([ShipperID]),
 	[ShipName] [nvarchar](40) NOT NULL,
-	[ShipAddress] [nvarchar](60) NOT NULL,
+	[ShipAddressID] int NOT NULL foreign key references [dw].[dShipAddress]([AddressID]),
 	[DeliveryDays] int NULL
 )

@@ -1,3 +1,11 @@
+INSERT INTO [dw].[dShipAddress]
+	([Address])
+	VALUES ('unknown')
+INSERT INTO [dw].[dShipAddress]
+	([Address])
+	SELECT DISTINCT [rel].[Orders].[ShipAddress]
+	FROM [rel].[Orders]
+	WHERE [ShipAddress] IS NOT NULL
 -------------------------------------------------------------------------------
 --								     dCity  								 --
 -------------------------------------------------------------------------------
@@ -286,7 +294,7 @@ INSERT INTO [dw].[fOrder]
            ,[ShipCityID]
            ,[ShipperID]
            ,[ShipName]
-           ,[ShipAddress]
+           ,[ShipAddressID]
            ,[Freight]
            ,[DeliveryDays]
            ,[OrderPrice]
@@ -306,7 +314,7 @@ INSERT INTO [dw].[fOrder]
 		  ,COALESCE([dw].[dShipCity].[CityID], 1)
 		  ,COALESCE([dw].[dShipper].[ShipperID], 1)
 		  ,COALESCE([rel].[Orders].[ShipName], 'unknown')
-		  ,COALESCE([rel].[Orders].[ShipAddress], 'unknown')
+		  ,COALESCE([dw].[dShipAddress].[AddressID], 1)
 		  ,[rel].[Orders].[Freight]
 		  ,DATEDIFF(day, [rel].[Orders].[OrderDate], [rel].[Orders].[ShippedDate])
 		  ,sums.[OrderSum]
@@ -323,6 +331,7 @@ INSERT INTO [dw].[fOrder]
 						LEFT OUTER JOIN [dw].[dShipCity] ON [rel].[Orders].[ShipCityId] = [dw].[dShipCity].[CityDBID]
 						LEFT OUTER JOIN [dw].[dShipper] ON [rel].[Orders].[ShipVia] = [dw].[dShipper].[ShipperDBID]
 						LEFT OUTER JOIN [dw].[dFreightInterval] ON ROUND([rel].[Orders].[Freight], 1) = [dw].[dFreightInterval].[FreightValue]
+						LEFT OUTER JOIN [dw].[dShipAddress] ON [rel].[Orders].[ShipAddress] = [dw].[dShipAddress].[Address]
 						LEFT OUTER JOIN (SELECT SUM([UnitPrice]*[Quantity]) AS OrderSum
 											   ,SUM(([UnitPrice]-[UnitPrice]*[Discount])*[Quantity]) AS OrderSumWithDiscount
 											   ,[OrderID]
@@ -354,7 +363,7 @@ INSERT INTO [dw].[fOrderItem]
            ,[ShippedTimeID]
            ,[ShipperID]
            ,[ShipName]
-           ,[ShipAddress]
+           ,[ShipAddressID]
 		   ,[DeliveryDays])
 	SELECT [dw].[fOrder].[OrderID]
 		  ,[dw].[dProduct].[ProductID]
@@ -377,7 +386,7 @@ INSERT INTO [dw].[fOrderItem]
 		  ,[dw].[fOrder].[ShippedTimeID]
 		  ,[dw].[fOrder].[ShipperID]
 		  ,[dw].[fOrder].[ShipName]
-		  ,[dw].[fOrder].[ShipAddress]
+		  ,[dw].[fOrder].[ShipAddressID]
 		  ,[dw].[fOrder].[DeliveryDays]
 		  FROM [rel].[OrderItems] JOIN [dw].[fOrder] ON [rel].[OrderItems].[OrderID] = [dw].[fOrder].[OrderDBID] 
 								  JOIN [dw].[dProduct] ON [rel].[OrderItems].[ProductID] = [dw].[dProduct].[ProductDBID]
