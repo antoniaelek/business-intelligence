@@ -46,7 +46,8 @@ namespace DWClient
             {
                 "dimTablica.nazTablica", "dimTablica.nazSQLTablica AS nazSqlDimTablica",
                 "cinjTablica.nazSQLTablica AS nazSqlCinjTablica", "cinjTabAtribut.imeSQLAtrib",
-                "dimTabAtribut.imeSqlAtrib", "tabAtribut.*"
+                "dimTabAtribut.imeSqlAtrib",
+                "tabAtribut.sifTablica", "tabAtribut.rbrAtrib", "tabAtribut.imeSQLAtrib", "tabAtribut.sifTipAtrib", "tabAtribut.imeAtrib"
             };
             var condition =
                 $"dimCinj.sifDimTablica = dimTablica.sifTablica " +
@@ -60,7 +61,7 @@ namespace DWClient
                 $"AND tabAtribut.sifTipAtrib = 2 " +
                 $"ORDER BY dimTablica.nazTablica, rbrAtrib";
             var result = connectionString.GetTypedTableData(string.Join(", ", tables), condition, columns);
-            return null;//result.Select(r => new Measurement(tables[0], tables[1], tables[2], tables[3], r.Row));
+            return result.Select(r => new Dimension(r.Row));
         }
 
     }

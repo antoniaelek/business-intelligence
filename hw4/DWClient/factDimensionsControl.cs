@@ -56,7 +56,15 @@ namespace DWClient
                 string val = "";
                 checkedListBox1.Items.Add(new ListBoxItem(measurement.AttributeAggrFunName.Value, val));
             }
-            
+
+            var dimensions = framework.GetDimensions(selectedObject);
+            checkedListBox2.Items.Clear();
+            foreach (var dimension in dimensions)
+            {
+                string val = "";
+                checkedListBox2.Items.Add(new ListBoxItem(dimension.DimTableName + "-" + dimension.TableAttributeMetadata.Name.Value, val));
+            }
+
         }
     }
 }
