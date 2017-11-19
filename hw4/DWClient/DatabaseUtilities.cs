@@ -87,7 +87,7 @@ namespace DWClient
                         return set;
 
                     foreach (DataRow row in tableSchema.Rows)
-                        set.Add(table + "." + row["ColumnName"].ToString());
+                        set.Add(table + "." + row["ColumnName"]);
                 }
             }
             return set;
@@ -113,9 +113,10 @@ namespace DWClient
             Action<SqlDataReader> readerAction = (reader) =>
             {
                 var rowResult = new TypedDatabaseResult();
+                int i = 0;
                 foreach (var colName in columns)
                 {
-                    rowResult.Row.Add(colName, reader[colName.GetSimpleTableName()].ToString().Trim());
+                    rowResult.Row.Add(colName, reader[i++].ToString().Trim());
                 }
                 results.Add(rowResult);
             };
@@ -170,7 +171,10 @@ namespace DWClient
             {
                 sqlConnection.Open();
 
-                columns = columns == default(string[]) || columns.Length == 0 ? new[] { "*" } : columns;
+                var tables = table.Split(',').Select(t => t.Trim());
+                var defaultColumns = tables.Select(t => $"{t}.*").ToArray();
+
+                columns = columns == default(string[]) || columns.Length == 0 ? defaultColumns : columns;
 
                 var query = $"SELECT {string.Join(", ", columns)} FROM {table}";
                 if (condition != null)

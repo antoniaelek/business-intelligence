@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using DWClient.Models;
 
@@ -24,15 +23,16 @@ namespace DWClient
 
         public IEnumerable<Measurement> GetMeasurements(TableMetadata table)
         {
-            string[] tableNames = {"tabAtribut", "agrFun", "tablica", "tabAtributAgrFun"};
-            var condition = $"tabAtribut.sifTablica = {table.ID.Value} " +
-                            "AND tabAtribut.sifTablica = tablica.sifTablica " +
-                            "AND tabAtribut.sifTablica = tabAtributAgrFun.sifTablica " +
-                            "AND tabAtribut.rbrAtrib = tabAtributAgrFun.rbrAtrib " +
-                            "AND tabAtributAgrFun.sifAgrFun = agrFun.sifAgrFun " +
-                            "AND tabAtribut.sifTipAtrib = 1";
-            var result = connectionString.GetUntypedTableData(string.Join(", ",tableNames), condition);
-            return result.Select(r => new Measurement(r.Row));
+            string[] tables = {"tablica", "tabAtribut", "agrFun", "tabAtributAgrFun"};
+            var condition = $"{tables[1]}.sifTablica = {table.ID.Value} " +
+                            $"AND {tables[1]}.sifTablica = {tables[0]}.sifTablica " +
+                            $"AND {tables[1]}.sifTablica = {tables[3]}.sifTablica " +
+                            $"AND {tables[1]}.rbrAtrib = {tables[3]}.rbrAtrib " +
+                            $"AND {tables[3]}.sifAgrFun = {tables[2]}.sifAgrFun " +
+                            $"AND {tables[1]}.sifTipAtrib = 1 " +
+                            $"ORDER BY {tables[1]}.rbrAtrib";
+            var result = connectionString.GetTypedTableData(string.Join(", ",tables), condition);
+            return result.Select(r => new Measurement(tables[0], tables[1], tables[2], tables[3], r.Row));
         }
         
     }

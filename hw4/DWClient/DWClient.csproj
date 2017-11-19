@@ -47,14 +47,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\AggregateFunctionMetadata.cs" />
+    <Compile Include="Models\AttributeMetadata.cs" />
     <Compile Include="ComboBoxItem.cs" />
     <Compile Include="DatabaseUtilities.cs" />
     <Compile Include="DWMetadataFramework.cs" />
-    <Compile Include="FactTablesMenu.cs">
+    <Compile Include="factDimensionsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="FactTablesMenu.Designer.cs">
-      <DependentUpon>FactTablesMenu.cs</DependentUpon>
+    <Compile Include="factDimensionsControl.Designer.cs">
+      <DependentUpon>factDimensionsControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
@@ -70,8 +72,8 @@
     <Compile Include="Models\UntypedDatabaseResult.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="FactTablesMenu.resx">
-      <DependentUpon>FactTablesMenu.cs</DependentUpon>
+    <EmbeddedResource Include="factDimensionsControl.resx">
+      <DependentUpon>factDimensionsControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>

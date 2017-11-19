@@ -11,13 +11,13 @@ using DWClient.Models;
 
 namespace DWClient
 {
-    public partial class FactTablesMenu : UserControl
+    public partial class FactDimensionsControl : UserControl
     {
         private Form parentForm;
         private readonly DWMetadataFramework framework;
         private IEnumerable<TableMetadata> fTables;
 
-        public FactTablesMenu(Form parentForm, DWMetadataFramework framework)
+        public FactDimensionsControl(Form parentForm, DWMetadataFramework framework)
         {
             this.parentForm = parentForm;
             this.framework = framework;
@@ -53,9 +53,8 @@ namespace DWClient
             checkedListBox1.Items.Clear();
             foreach (var measurement in measurements)
             {
-                string text = $"{measurement.nazAgrFun.Value} of {measurement.imeAtrib.Value}";
                 string val = "";
-                checkedListBox1.Items.Add(new ListBoxItem(measurement.imeAtribAgrFun.Value, val));
+                checkedListBox1.Items.Add(new ListBoxItem(measurement.AttributeAggrFunName.Value, val));
             }
             
         }

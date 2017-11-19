@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
 using System.Windows.Forms;
-using DWClient.Models;
 
 namespace DWClient
 {
@@ -26,13 +22,13 @@ namespace DWClient
             var form = new Form1 {WindowState = FormWindowState.Normal};
 
             // Create form controls
-            var factTablesMenu = new FactTablesMenu(form, Framework)
+            var factsDimensionsControl = new FactDimensionsControl(form, Framework)
                 {
                     Anchor = AnchorStyles.Right | AnchorStyles.Left | AnchorStyles.Top
                 };
 
             // Add controls to main form
-            form.splitContainer1.Panel1.Controls.Add(factTablesMenu);
+            form.splitContainer1.Panel1.Controls.Add(factsDimensionsControl);
             Application.Run(form);
         }
     }
