@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Configuration;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace DWClient
@@ -17,7 +18,10 @@ namespace DWClient
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Framework = new DWMetadataFramework(ConfigurationManager.ConnectionStrings["db"].ToString());
-            
+
+            var tables = Framework.GetFactTables();
+            Framework.GetDimensions(tables.FirstOrDefault());
+
             // Main form
             var form = new Form1 {WindowState = FormWindowState.Normal};
 
@@ -29,6 +33,7 @@ namespace DWClient
 
             // Add controls to main form
             form.splitContainer1.Panel1.Controls.Add(factsDimensionsControl);
+            
             Application.Run(form);
         }
     }

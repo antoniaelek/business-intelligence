@@ -50,27 +50,35 @@ namespace DWClient
         /// <param name="connectionString">Database connectionstring</param>
         /// <param name="tables">Database table name</param>
         /// <returns>Column names for the specified table</returns>
-        public static HashSet<string> GetTablesColumns(this string connectionString, string[] tables)
+        public static List<string> GetTablesColumns(this string connectionString, string[] tables)
         {
             // We will store result here
-            var columnNames = new HashSet<string>();
-            foreach (var table in tables)
+            var columnNames = new List<string>();
+            var tableNames = new List<DatabaseAttribute>();
+            foreach (var fullNamame in tables)
             {
-                var tableColumnNames = GetTableColumns(connectionString, table);
+                var alias = fullNamame.Substring(fullNamame.LastIndexOf(' ') + 1).Trim();
+                var withoutAlias = fullNamame.Substring(0, fullNamame.IndexOf(' ') == -1 ? fullNamame.Length : fullNamame.IndexOf(' '));
+                tableNames.Add(new DatabaseAttribute(fullNamame,withoutAlias,alias));
+            }
+
+            foreach (var table in tableNames)
+            {
+                var tableColumnNames = GetTableColumns(connectionString, table.Name);
                 foreach (var columnName in tableColumnNames)
                 {
-                    columnNames.Add(columnName);
+                    var cn = $"{table.Alias}.{columnName.Substring(columnName.IndexOf(".") + 1)}";
+                    columnNames.Add(cn);
                 }
             }
-            
 
             return columnNames;
         }
 
-        private static HashSet<string> GetTableColumns(string connectionString, string table)
+        private static List<string> GetTableColumns(string connectionString, string table)
         {
             var query = $"SELECT TOP 0 * FROM {table}";
-            var set = new HashSet<string>();
+            var set = new List<string>();
             using (var sqlConnection = new SqlConnection(connectionString))
             {
                 sqlConnection.Open();
@@ -93,19 +101,18 @@ namespace DWClient
             return set;
         }
 
+
         /// <summary>
         /// Gets typed data from database table.
         /// </summary>
         /// <param name="connectionString">Database connectionstring</param>
         /// <param name="table">Database table name</param>
         /// <param name="condition">Optional condition that will be added in WHERE part of SQL query</param>
+        /// <param name="columns">Columns to get</param>
         /// <returns>Rows of data from table</returns>
-        public static List<TypedDatabaseResult> GetTypedTableData(this string connectionString, string table, string condition = null)
+        public static List<TypedDatabaseResult> GetTypedTableData(this string connectionString, string table,
+            string condition, string[] columns)
         {
-            // Get column names
-            var tables = table.Split(',').Select(t => t.Trim()).ToArray();
-            var columns = GetTablesColumns(connectionString, tables).ToArray();
-
             // We will store entities from database in this list
             var results = new List<TypedDatabaseResult>();
 
@@ -125,6 +132,22 @@ namespace DWClient
             ReadTableData(connectionString, table, readerAction, condition, columns);
 
             return results;
+        }
+
+        /// <summary>
+        /// Gets typed data from database table.
+        /// </summary>
+        /// <param name="connectionString">Database connectionstring</param>
+        /// <param name="table">Database table name</param>
+        /// <param name="condition">Optional condition that will be added in WHERE part of SQL query</param>
+        /// <returns>Rows of data from table</returns>
+        public static List<TypedDatabaseResult> GetTypedTableData(this string connectionString, string table, string condition = null)
+        {
+            // Get column names
+            var tables = table.Split(',').Select(t => t.Trim()).ToArray();
+            var columns = GetTablesColumns(connectionString, tables).ToArray();
+
+            return GetTypedTableData(connectionString, table, condition, columns);
         }
 
         /// <summary>

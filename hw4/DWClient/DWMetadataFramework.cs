@@ -34,6 +34,34 @@ namespace DWClient
             var result = connectionString.GetTypedTableData(string.Join(", ",tables), condition);
             return result.Select(r => new Measurement(tables[0], tables[1], tables[2], tables[3], r.Row));
         }
-        
+
+        public IEnumerable<Dimension> GetDimensions(TableMetadata table)
+        {
+            string[] tables =
+            {
+                "tabAtribut", "dimCinj", "tablica dimTablica", "tablica cinjTablica", "tabAtribut cinjTabAtribut",
+                "tabAtribut dimTabAtribut"
+            };
+            string[] columns =
+            {
+                "dimTablica.nazTablica", "dimTablica.nazSQLTablica AS nazSqlDimTablica",
+                "cinjTablica.nazSQLTablica AS nazSqlCinjTablica", "cinjTabAtribut.imeSQLAtrib",
+                "dimTabAtribut.imeSqlAtrib", "tabAtribut.*"
+            };
+            var condition =
+                $"dimCinj.sifDimTablica = dimTablica.sifTablica " +
+                $"AND dimCinj.sifCinjTablica = cinjTablica.sifTablica " +
+                $"AND dimCinj.sifCinjTablica = cinjTabAtribut.sifTablica " +
+                $"AND dimCinj.rbrCinj = cinjTabAtribut.rbrAtrib " +
+                $"AND dimCinj.sifDimTablica = dimTabAtribut.sifTablica " +
+                $"AND dimCinj.rbrDim = dimTabAtribut.rbrAtrib " +
+                $"AND tabAtribut.sifTablica = dimCinj.sifDimTablica " +
+                $"AND sifCinjTablica = {table.ID.Value}" +
+                $"AND tabAtribut.sifTipAtrib = 2 " +
+                $"ORDER BY dimTablica.nazTablica, rbrAtrib";
+            var result = connectionString.GetTypedTableData(string.Join(", ", tables), condition, columns);
+            return null;//result.Select(r => new Measurement(tables[0], tables[1], tables[2], tables[3], r.Row));
+        }
+
     }
 }
