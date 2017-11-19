@@ -4,17 +4,15 @@ using System.Linq;
 using System.Windows.Forms;
 using DWClient.Models;
 
-namespace DWClient
+namespace DWClient.Controls
 {
     public partial class FactDimensionsControl : UserControl
     {
-        private Form parentForm;
         private readonly DWMetadataFramework framework;
         private IEnumerable<TableMetadata> fTables;
 
-        public FactDimensionsControl(Form parentForm, DWMetadataFramework framework)
+        public FactDimensionsControl(DWMetadataFramework framework)
         {
-            this.parentForm = parentForm;
             this.framework = framework;
             InitializeComponent();
             Fill();
@@ -25,9 +23,9 @@ namespace DWClient
             fTables = framework.GetFactTables();
             foreach (var fTable in fTables)
             {
-                comboBoxFactTables.Items.Add(new ComboBoxItem(fTable.Name.Value, fTable.SqlName.Value));
+                fTablesComboBox.Items.Add(new ComboBoxItem(fTable.Name.Value, fTable));
             }
-            comboBoxFactTables.SelectedIndex = 0;
+            fTablesComboBox.SelectedIndex = 0;
             RefreshPanels();
         }
 
@@ -38,11 +36,8 @@ namespace DWClient
 
         private void RefreshPanels()
         {
-            var selectedObject = fTables.FirstOrDefault(f =>
-                f.SqlName.Value == (comboBoxFactTables.SelectedItem as ComboBoxItem)?.Value.ToString());
-
-            if (selectedObject == null)
-                return;
+            var selectedObject = (fTablesComboBox.SelectedItem as ComboBoxItem)?.Value as TableMetadata;
+            if (selectedObject == null) return;
 
             RefreshMeasurements(selectedObject);
             RefreshDimensions(selectedObject);
@@ -69,11 +64,10 @@ namespace DWClient
         private void RefreshMeasurements(TableMetadata selectedObject)
         {
             var measurements = framework.GetMeasurements(selectedObject);
-            checkedListBox1.Items.Clear();
+            measuresCheckedListBox.Items.Clear();
             foreach (var measurement in measurements)
             {
-                string val = "";
-                checkedListBox1.Items.Add(new ListBoxItem(measurement.AttributeAggrFunName.Value, val));
+                measuresCheckedListBox.Items.Add(new ListBoxItem(measurement.AttributeAggrFunName.Value, measurement));
             }
         }
 
@@ -90,7 +84,7 @@ namespace DWClient
 
                 if (item.Nodes.Count > 0)
                 {
-                    this.CheckTreeViewNode(item, isChecked);
+                    CheckTreeViewNode(item, isChecked);
                 }
             }
         }

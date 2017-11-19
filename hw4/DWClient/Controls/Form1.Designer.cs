@@ -1,4 +1,4 @@
-﻿namespace DWClient
+﻿namespace DWClient.Controls
 {
     partial class Form1
     {
@@ -54,7 +54,7 @@
             this.ClientSize = new System.Drawing.Size(484, 513);
             this.Controls.Add(this.splitContainer1);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "DW Client";
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.ResumeLayout(false);

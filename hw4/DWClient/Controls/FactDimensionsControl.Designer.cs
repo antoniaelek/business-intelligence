@@ -1,4 +1,4 @@
-﻿namespace DWClient
+﻿namespace DWClient.Controls
 {
     partial class FactDimensionsControl
     {
@@ -28,14 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.comboBoxFactTables = new System.Windows.Forms.ComboBox();
+            this.fTablesComboBox = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.checkedListBox1 = new System.Windows.Forms.CheckedListBox();
+            this.measuresCheckedListBox = new System.Windows.Forms.CheckedListBox();
             this.dimensionsTreeView = new System.Windows.Forms.TreeView();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-            this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -48,14 +48,14 @@
             // 
             // comboBoxFactTables
             // 
-            this.comboBoxFactTables.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.fTablesComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboBoxFactTables.FormattingEnabled = true;
-            this.comboBoxFactTables.Location = new System.Drawing.Point(10, 30);
-            this.comboBoxFactTables.Name = "comboBoxFactTables";
-            this.comboBoxFactTables.Size = new System.Drawing.Size(440, 21);
-            this.comboBoxFactTables.TabIndex = 0;
-            this.comboBoxFactTables.SelectionChangeCommitted += new System.EventHandler(this.comboBoxFactTables_SelectionChangeCommitted);
+            this.fTablesComboBox.FormattingEnabled = true;
+            this.fTablesComboBox.Location = new System.Drawing.Point(10, 30);
+            this.fTablesComboBox.Name = "fTablesComboBox";
+            this.fTablesComboBox.Size = new System.Drawing.Size(440, 21);
+            this.fTablesComboBox.TabIndex = 0;
+            this.fTablesComboBox.SelectionChangeCommitted += new System.EventHandler(this.comboBoxFactTables_SelectionChangeCommitted);
             // 
             // label1
             // 
@@ -69,16 +69,16 @@
             // 
             // checkedListBox1
             // 
-            this.checkedListBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.measuresCheckedListBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkedListBox1.BackColor = System.Drawing.SystemColors.Menu;
-            this.checkedListBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.checkedListBox1.FormattingEnabled = true;
-            this.checkedListBox1.Location = new System.Drawing.Point(6, 13);
-            this.checkedListBox1.Name = "checkedListBox1";
-            this.checkedListBox1.Size = new System.Drawing.Size(207, 195);
-            this.checkedListBox1.TabIndex = 2;
+            this.measuresCheckedListBox.BackColor = System.Drawing.SystemColors.Menu;
+            this.measuresCheckedListBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.measuresCheckedListBox.FormattingEnabled = true;
+            this.measuresCheckedListBox.Location = new System.Drawing.Point(6, 13);
+            this.measuresCheckedListBox.Name = "measuresCheckedListBox";
+            this.measuresCheckedListBox.Size = new System.Drawing.Size(207, 195);
+            this.measuresCheckedListBox.TabIndex = 2;
             // 
             // dimensionsTreeView
             // 
@@ -105,7 +105,7 @@
             // 
             // splitContainer1.Panel1
             // 
-            this.splitContainer1.Panel1.Controls.Add(this.checkedListBox1);
+            this.splitContainer1.Panel1.Controls.Add(this.measuresCheckedListBox);
             // 
             // splitContainer1.Panel2
             // 
@@ -134,25 +134,25 @@
             this.splitContainer2.SplitterDistance = 218;
             this.splitContainer2.TabIndex = 7;
             // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(3, 8);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(87, 18);
-            this.label2.TabIndex = 0;
-            this.label2.Text = "Dimensions";
-            // 
             // label3
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(3, 8);
+            this.label3.Location = new System.Drawing.Point(3, 5);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(107, 18);
             this.label3.TabIndex = 0;
             this.label3.Text = "Measurements";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(3, 5);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(87, 18);
+            this.label2.TabIndex = 0;
+            this.label2.Text = "Dimensions";
             // 
             // FactDimensionsControl
             // 
@@ -161,7 +161,7 @@
             this.Controls.Add(this.splitContainer2);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.comboBoxFactTables);
+            this.Controls.Add(this.fTablesComboBox);
             this.Name = "FactDimensionsControl";
             this.Size = new System.Drawing.Size(460, 321);
             this.splitContainer1.Panel1.ResumeLayout(false);
@@ -181,10 +181,10 @@
 
         #endregion
 
-        internal System.Windows.Forms.ComboBox comboBoxFactTables;
+        internal System.Windows.Forms.ComboBox fTablesComboBox;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.CheckedListBox checkedListBox1;
-        private System.Windows.Forms.TreeView dimensionsTreeView;
+        internal System.Windows.Forms.CheckedListBox measuresCheckedListBox;
+        internal System.Windows.Forms.TreeView dimensionsTreeView;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.SplitContainer splitContainer2;
         private System.Windows.Forms.Label label3;

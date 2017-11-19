@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Configuration;
 using System.Windows.Forms;
+using DWClient.Controls;
 
 namespace DWClient
 {
@@ -22,12 +23,12 @@ namespace DWClient
             var form = new Form1 {WindowState = FormWindowState.Normal};
 
             // Create form controls
-            var factsDimensionsControl = new FactDimensionsControl(form, Framework)
+            var factsDimensionsControl = new FactDimensionsControl(Framework)
                 {
                     Anchor = AnchorStyles.Right | AnchorStyles.Left | AnchorStyles.Top
                 };
 
-            var sqlControl = new SqlControl()
+            var sqlControl = new SqlControl(factsDimensionsControl)
             {
                 Anchor = AnchorStyles.Right | AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Bottom
             };

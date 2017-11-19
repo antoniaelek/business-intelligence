@@ -1,4 +1,4 @@
-﻿namespace DWClient
+﻿namespace DWClient.Controls
 {
     partial class SqlControl
     {
@@ -29,19 +29,21 @@
         private void InitializeComponent()
         {
             this.button1 = new System.Windows.Forms.Button();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.textBox1 = new System.Windows.Forms.RichTextBox();
             this.SuspendLayout();
             // 
             // button1
             // 
             this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button1.Location = new System.Drawing.Point(10, 2);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(438, 23);
+            this.button1.Size = new System.Drawing.Size(438, 28);
             this.button1.TabIndex = 0;
             this.button1.Text = "Generate sql query";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // textBox1
             // 
@@ -49,12 +51,13 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBox1.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.textBox1.Location = new System.Drawing.Point(10, 32);
-            this.textBox1.Multiline = true;
+            this.textBox1.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBox1.Location = new System.Drawing.Point(10, 38);
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(438, 125);
+            this.textBox1.Size = new System.Drawing.Size(438, 119);
             this.textBox1.TabIndex = 1;
+            this.textBox1.Text = "";
             // 
             // SqlControl
             // 
@@ -65,13 +68,12 @@
             this.Name = "SqlControl";
             this.Size = new System.Drawing.Size(460, 161);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
 
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.RichTextBox textBox1;
     }
 }
