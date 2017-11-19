@@ -45,7 +45,6 @@ namespace DWClient
                 return;
 
             RefreshMeasurements(selectedObject);
-
             RefreshDimensions(selectedObject);
         }
 

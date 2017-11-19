@@ -27,8 +27,14 @@ namespace DWClient
                     Anchor = AnchorStyles.Right | AnchorStyles.Left | AnchorStyles.Top
                 };
 
+            var sqlControl = new SqlControl()
+            {
+                Anchor = AnchorStyles.Right | AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Bottom
+            };
+
             // Add controls to main form
             form.splitContainer1.Panel1.Controls.Add(factsDimensionsControl);
+            form.splitContainer1.Panel2.Controls.Add(sqlControl);
             Application.Run(form);
         }
     }
