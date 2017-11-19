@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using DWClient.Models;
 
@@ -33,15 +28,15 @@ namespace DWClient
                 comboBoxFactTables.Items.Add(new ComboBoxItem(fTable.Name.Value, fTable.SqlName.Value));
             }
             comboBoxFactTables.SelectedIndex = 0;
-            SetMeasurements();
+            RefreshPanels();
         }
 
         private void comboBoxFactTables_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            SetMeasurements();
+            RefreshPanels();
         }
 
-        private void SetMeasurements()
+        private void RefreshPanels()
         {
             var selectedObject = fTables.FirstOrDefault(f =>
                 f.SqlName.Value == (comboBoxFactTables.SelectedItem as ComboBoxItem)?.Value.ToString());
@@ -49,6 +44,31 @@ namespace DWClient
             if (selectedObject == null)
                 return;
 
+            RefreshMeasurements(selectedObject);
+
+            RefreshDimensions(selectedObject);
+        }
+
+        private void RefreshDimensions(TableMetadata selectedObject)
+        {
+            var dimensions = framework.GetDimensions(selectedObject);
+            var grouppedDimensions = dimensions.GroupBy(d => d.DimTableName);
+            dimensionsTreeView.Nodes.Clear();
+            dimensionsTreeView.CheckBoxes = true;
+            foreach (var dimension in grouppedDimensions)
+            {
+                var nodes = new TreeNode[dimension.Count()];
+                int i = 0;
+                foreach (var dimAttr in dimension)
+                {
+                    nodes[i++] = new TreeNode(dimAttr.TableAttributeMetadata.Name.Value);
+                }
+                dimensionsTreeView.Nodes.Add(new TreeNode(dimension.Key, nodes));
+            }
+        }
+
+        private void RefreshMeasurements(TableMetadata selectedObject)
+        {
             var measurements = framework.GetMeasurements(selectedObject);
             checkedListBox1.Items.Clear();
             foreach (var measurement in measurements)
@@ -56,15 +76,24 @@ namespace DWClient
                 string val = "";
                 checkedListBox1.Items.Add(new ListBoxItem(measurement.AttributeAggrFunName.Value, val));
             }
+        }
 
-            var dimensions = framework.GetDimensions(selectedObject);
-            checkedListBox2.Items.Clear();
-            foreach (var dimension in dimensions)
+        private void dimensionsTreeView_AfterCheck(object sender, TreeViewEventArgs e)
+        {
+            CheckTreeViewNode(e.Node, e.Node.Checked);
+        }
+
+        private void CheckTreeViewNode(TreeNode node, bool isChecked)
+        {
+            foreach (TreeNode item in node.Nodes)
             {
-                string val = "";
-                checkedListBox2.Items.Add(new ListBoxItem(dimension.DimTableName + "-" + dimension.TableAttributeMetadata.Name.Value, val));
-            }
+                item.Checked = isChecked;
 
+                if (item.Nodes.Count > 0)
+                {
+                    this.CheckTreeViewNode(item, isChecked);
+                }
+            }
         }
     }
 }

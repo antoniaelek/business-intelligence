@@ -42,15 +42,15 @@
             this.splitContainer1.Location = new System.Drawing.Point(13, 13);
             this.splitContainer1.Name = "splitContainer1";
             this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            this.splitContainer1.Size = new System.Drawing.Size(459, 374);
-            this.splitContainer1.SplitterDistance = 242;
+            this.splitContainer1.Size = new System.Drawing.Size(459, 488);
+            this.splitContainer1.SplitterDistance = 315;
             this.splitContainer1.TabIndex = 0;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(484, 399);
+            this.ClientSize = new System.Drawing.Size(484, 513);
             this.Controls.Add(this.splitContainer1);
             this.Name = "Form1";
             this.Text = "Form1";

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Configuration;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace DWClient
@@ -19,7 +18,6 @@ namespace DWClient
             Application.SetCompatibleTextRenderingDefault(false);
             Framework = new DWMetadataFramework(ConfigurationManager.ConnectionStrings["db"].ToString());
 
-            
             // Main form
             var form = new Form1 {WindowState = FormWindowState.Normal};
 

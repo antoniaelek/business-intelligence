@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace DWClient.Models
+﻿namespace DWClient.Models
 {
     public class Measurement
     {

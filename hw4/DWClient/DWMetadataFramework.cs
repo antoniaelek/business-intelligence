@@ -74,7 +74,8 @@ namespace DWClient
                 DimTableAttributeSqlName = result["dimTabAtribut.imeSqlAtrib"],
                 FactTableAttributeSqlName = result["cinjTabAtribut.imeSQLAtrib"],
                 DimTableSqlName = result["dimTablica.nazSQLTablica AS nazSqlDimTablica"],
-                DimTableName = result["cinjTablica.nazSQLTablica AS nazSqlCinjTablica"]
+                DimTableName = result["dimTablica.nazTablica"],
+                FactTableSqlName = result["cinjTablica.nazSQLTablica AS nazSqlCinjTablica"]
             };
 
             return dim;
