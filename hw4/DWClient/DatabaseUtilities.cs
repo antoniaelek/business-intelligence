@@ -22,6 +22,9 @@ namespace DWClient
             if (tableName.Contains($"{EncloseCharClose}.{EncloseCharOpen}"))
                 tableName = tableName.Substring(tableName.IndexOf($"{EncloseCharClose}.{EncloseCharOpen}", StringComparison.Ordinal) + 2);
 
+            if (tableName.Contains("."))
+                tableName = tableName.Substring(tableName.IndexOf(".", StringComparison.Ordinal) + 1);
+
             if (tableName.StartsWith(EncloseCharOpen.ToString()) && tableName.EndsWith(EncloseCharClose.ToString()))
                 tableName = tableName.Substring(1, tableName.Length - 2);
 
@@ -45,18 +48,29 @@ namespace DWClient
         /// Gets column names for the specified database table.
         /// </summary>
         /// <param name="connectionString">Database connectionstring</param>
-        /// <param name="table">Database table name</param>
+        /// <param name="tables">Database table name</param>
         /// <returns>Column names for the specified table</returns>
-        public static HashSet<string> GetTableColumns(this string connectionString, string table)
+        public static HashSet<string> GetTablesColumns(this string connectionString, string[] tables)
         {
-            table = EncloseObjectName(table);
-
-            // We don't want data
-            var query = $"SELECT TOP 0 * FROM {table}";
-
             // We will store result here
             var columnNames = new HashSet<string>();
+            foreach (var table in tables)
+            {
+                var tableColumnNames = GetTableColumns(connectionString, table);
+                foreach (var columnName in tableColumnNames)
+                {
+                    columnNames.Add(columnName);
+                }
+            }
+            
 
+            return columnNames;
+        }
+
+        private static HashSet<string> GetTableColumns(string connectionString, string table)
+        {
+            var query = $"SELECT TOP 0 * FROM {table}";
+            var set = new HashSet<string>();
             using (var sqlConnection = new SqlConnection(connectionString))
             {
                 sqlConnection.Open();
@@ -69,14 +83,14 @@ namespace DWClient
                     var tableSchema = reader.GetSchemaTable();
 
                     // Get column names
-                    if (tableSchema?.Rows == null) return columnNames;
+                    if (tableSchema?.Rows == null)
+                        return set;
 
                     foreach (DataRow row in tableSchema.Rows)
-                        columnNames.Add(row["ColumnName"].ToString());
+                        set.Add(table + "." + row["ColumnName"].ToString());
                 }
             }
-
-            return columnNames;
+            return set;
         }
 
         /// <summary>
@@ -89,7 +103,8 @@ namespace DWClient
         public static List<TypedDatabaseResult> GetTypedTableData(this string connectionString, string table, string condition = null)
         {
             // Get column names
-            var columns = GetTableColumns(connectionString, table).ToArray();
+            var tables = table.Split(',').Select(t => t.Trim()).ToArray();
+            var columns = GetTablesColumns(connectionString, tables).ToArray();
 
             // We will store entities from database in this list
             var results = new List<TypedDatabaseResult>();
@@ -100,7 +115,7 @@ namespace DWClient
                 var rowResult = new TypedDatabaseResult();
                 foreach (var colName in columns)
                 {
-                    rowResult.Row.Add(colName, reader[colName].ToString().Trim());
+                    rowResult.Row.Add(colName, reader[colName.GetSimpleTableName()].ToString().Trim());
                 }
                 results.Add(rowResult);
             };
@@ -155,10 +170,9 @@ namespace DWClient
             {
                 sqlConnection.Open();
 
-                table = EncloseObjectName(table);
-                columns = columns == default(string[]) ? new[] { "*" } : columns.Select(c => c.EncloseObjectName()).ToArray();
+                columns = columns == default(string[]) || columns.Length == 0 ? new[] { "*" } : columns;
 
-                var query = $"SELECT {string.Join(",", columns)} FROM {table}";
+                var query = $"SELECT {string.Join(", ", columns)} FROM {table}";
                 if (condition != null)
                     query += $" WHERE {condition}";
 

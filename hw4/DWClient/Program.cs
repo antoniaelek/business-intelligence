@@ -1,11 +1,17 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Configuration;
+using System.Linq;
 using System.Windows.Forms;
+using DWClient.Models;
 
 namespace DWClient
 {
     static class Program
     {
+        internal static DWMetadataFramework Framework;
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -14,33 +20,20 @@ namespace DWClient
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            var framework = new DWMetadataFramework(ConfigurationManager.ConnectionStrings["db"].ToString());
-            
-            // Create form controls
-            var factTablesMenu = FillFactTablesMenu(framework);
+            Framework = new DWMetadataFramework(ConfigurationManager.ConnectionStrings["db"].ToString());
             
             // Main form
             var form = new Form1 {WindowState = FormWindowState.Normal};
 
-            // Add controls to main form
-            form.Controls.Add(factTablesMenu);
-            Application.Run(form);
-        }
-
-        private static FactTablesMenu FillFactTablesMenu(DWMetadataFramework framework)
-        {
-            var factTables = framework.GetFactTables();
-            var factTablesMenu =
-                new FactTablesMenu
+            // Create form controls
+            var factTablesMenu = new FactTablesMenu(form, Framework)
                 {
                     Anchor = AnchorStyles.Right | AnchorStyles.Left | AnchorStyles.Top
                 };
 
-            foreach (var fTable in factTables)
-            {
-                factTablesMenu.comboBoxFactTables.Items.Add(new ComboBoxItem(fTable.Name.Value, fTable.SqlName.Value));
-            }
-            return factTablesMenu;
+            // Add controls to main form
+            form.splitContainer1.Panel1.Controls.Add(factTablesMenu);
+            Application.Run(form);
         }
     }
 }
