@@ -45,7 +45,6 @@ namespace DWClient
             form.splitContainerInner.Panel1.Controls.Add(factsDimensionsControl);
             form.splitContainerInner.Panel2.Controls.Add(sqlControl);
             form.splitContainerOuter.Panel2.Controls.Add(resultsControl);
-            form.splitContainerOuter.BorderStyle = BorderStyle.FixedSingle;
             Application.Run(form);
         }
     }

@@ -20,20 +20,27 @@ namespace DWClient
             using (var sqlConnection = new SqlConnection(connectionString))
             {
                 sqlConnection.Open();
-                
-                
-                using (var reader = new SqlCommand(query, sqlConnection).ExecuteReader())
+
+
+                try
                 {
-                    while (reader.Read())
+                    using (var reader = new SqlCommand(query, sqlConnection).ExecuteReader())
                     {
-                        var rowResult = new TypedDatabaseResult();
-                        int i = 0;
-                        foreach (var colName in columns)
+                        while (reader.Read())
                         {
-                            rowResult.Row.Add(colName, reader[i++].ToString().Trim());
+                            var rowResult = new TypedDatabaseResult();
+                            int i = 0;
+                            foreach (var colName in columns)
+                            {
+                                rowResult.Row.Add(colName, reader[i++].ToString().Trim());
+                            }
+                            results.Add(rowResult);
                         }
-                        results.Add(rowResult);
                     }
+                }
+                catch (Exception)
+                {
+                    return new List<TypedDatabaseResult>();
                 }
             }
 

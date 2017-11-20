@@ -28,7 +28,11 @@ namespace DWClient.Controls
             var dimensions = GetDimensions();
 
             // Generate sql query
+            textBox1.Clear();
             var query = GenerateSqlQuery(fTable, measurements, dimensions);
+            
+            if (query == null) return;
+
             textBox1.Text = query;
 
             // Execute sql query
@@ -43,7 +47,7 @@ namespace DWClient.Controls
             resultsControl.dataGridView1.Columns.Clear();
             resultsControl.dataGridView1.Rows.Clear();
 
-            var columns = query.GetColumns().Select(c => new {colName = c, colAlias = GetAlias(c)}).ToList();
+            var columns = query.GetColumns().Select(c => new { colName = c, colAlias = GetAlias(c) }).ToList();
             foreach (var col in columns)
             {
                 resultsControl.dataGridView1.Columns.Add(col.colName, col.colAlias);
@@ -65,26 +69,37 @@ namespace DWClient.Controls
 
         private string GetAlias(string selectQueryPart)
         {
-            var name = selectQueryPart.Substring(selectQueryPart.LastIndexOf(' ') + 1).Trim();
-            var startIdx = name.IndexOf('\'');
-            var endIdx = name.LastIndexOf('\'');
-            return name.Substring(startIdx+1, endIdx - startIdx-1);
+            var startIdx = selectQueryPart.IndexOf('\'');
+            var endIdx = selectQueryPart.LastIndexOf('\'');
+            if (startIdx == endIdx)
+                return selectQueryPart;
+            return selectQueryPart.Substring(startIdx + 1, endIdx - startIdx - 1);
         }
 
         private string GenerateSqlQuery(TableMetadata fTable, IEnumerable<Measurement> measurements, IEnumerable<Dimension> dimensions)
         {
-            var query = new StringBuilder("SELECT");
+            var query = new StringBuilder();
             var dims = dimensions as IList<Dimension> ?? dimensions.ToList();
             var dinstinctDimensions = new HashSet<Dimension>(dims);
 
             // SELECT part
-            query.Append(GenerateSqlSelectPart(measurements, dims, fTable));
+            var selectPart = GenerateSqlSelectPart(measurements, dims, fTable);
+            if (string.IsNullOrWhiteSpace(selectPart))
+                return null;
+
+            query.Append($"SELECT {selectPart}");
 
             // FROM part
-            query.Append(GenerateSqlFromPart(fTable, dinstinctDimensions));
+            var fromPart = GenerateSqlFromPart(fTable, dinstinctDimensions);
+            query.Append(string.IsNullOrWhiteSpace(fromPart) ? string.Empty : $"{Environment.NewLine}FROM\t{fromPart}");
 
             // WHERE PART
-            query.Append(GenerateSqlWherePart(fTable, dinstinctDimensions));
+            var wherePart = GenerateSqlWherePart(fTable, dinstinctDimensions);
+            query.Append(string.IsNullOrWhiteSpace(wherePart) ? string.Empty : $"{Environment.NewLine}WHERE\t{wherePart}");
+
+            // GROUP BY part
+            var groupByPart = GenerateSqlGroupByPart(dims);
+            query.Append(string.IsNullOrWhiteSpace(groupByPart) ? string.Empty : $"{Environment.NewLine}GROUP BY {groupByPart}");
 
             return query.ToString();
         }
@@ -92,7 +107,6 @@ namespace DWClient.Controls
         private static string GenerateSqlWherePart(TableMetadata fTable, HashSet<Dimension> joinedDimensions)
         {
             var query = new StringBuilder();
-            query.Append($"{Environment.NewLine}WHERE");
             var whereConditions = new HashSet<string>();
             foreach (var table in joinedDimensions)
             {
@@ -100,21 +114,20 @@ namespace DWClient.Controls
                     $"{fTable.SqlName.Value}.{table.FactTableAttributeSqlName} = {table.DimTableSqlName}.{table.DimTableAttributeSqlName}");
             }
             var wherePart = string.Join($"{Environment.NewLine}  AND\t", whereConditions);
-            query.Append($"\t{wherePart}");
+            query.Append($"{wherePart}");
             return query.ToString();
         }
 
         private static string GenerateSqlFromPart(TableMetadata fTable, HashSet<Dimension> joinedDimensions)
         {
             var query = new StringBuilder();
-            query.Append($"{Environment.NewLine}FROM");
-            var fromTables = new HashSet<string>(joinedDimensions.Select(d => d.DimTableSqlName)) {fTable.SqlName.Value};
+            var fromTables = new HashSet<string>(joinedDimensions.Select(d => d.DimTableSqlName)) { fTable.SqlName.Value };
             var fromPart = string.Join($"{Environment.NewLine}\t,", fromTables);
-            query.Append($"\t {fromPart}");
+            query.Append($" {fromPart}");
             return query.ToString();
         }
 
-        private static string GenerateSqlSelectPart(IEnumerable<Measurement> measurements, IEnumerable<Dimension> dimensions, 
+        private static string GenerateSqlSelectPart(IEnumerable<Measurement> measurements, IEnumerable<Dimension> dimensions,
             TableMetadata fTable)
         {
             var query = new StringBuilder();
@@ -129,9 +142,24 @@ namespace DWClient.Controls
             {
                 selectList.Add($"{d.DimTableSqlName}.{d.TableAttributeMetadata.SqlName.Value} AS '{d.TableAttributeMetadata.Name.Value}'");
             }
-            
+
             var selectPart = string.Join($"{Environment.NewLine}\t,", selectList);
-            query.Append($"\t {selectPart}");
+            query.Append($" {selectPart}");
+
+            return query.ToString();
+        }
+
+        private static string GenerateSqlGroupByPart(IEnumerable<Dimension> dimensions)
+        {
+            var query = new StringBuilder();
+            var list = new List<string>();
+            foreach (var d in dimensions)
+            {
+                list.Add($"{d.DimTableSqlName}.{d.TableAttributeMetadata.SqlName.Value}");
+            }
+
+            var part = string.Join($"{Environment.NewLine}\t,", list);
+            query.Append($"{part}");
 
             return query.ToString();
         }
