@@ -6,4 +6,4 @@
 # Development instructions
 
 - set connectionstring `db` in `DWClient/App.config` file
-- Start from Visual Studio
+- run/debug from Visual Studio
