@@ -28,31 +28,82 @@ namespace DWClient.Controls
         private string GenerateSqlQuery(TableMetadata fTable, IEnumerable<Measurement> measurements, IEnumerable<Dimension> dimensions)
         {
             var query = new StringBuilder("SELECT");
-            var joinedTables = new HashSet<TableMetadata>();
-            //joinedTables.Add(fTable);
+            HashSet<Dimension> joinedDimensions;
 
-            // SELECT list
+            // SELECT part
+            query.Append(GenerateSqlSelectPart(measurements, dimensions, fTable, out joinedDimensions));
+
+            // FROM part
+            query.Append(GenerateSqlFromPart(fTable, joinedDimensions));
+
+            // WHERE PART
+            query.Append(GenerateSqlWherePart(fTable, joinedDimensions));
+
+            return query.ToString();
+        }
+
+        private static string GenerateSqlWherePart(TableMetadata fTable, HashSet<Dimension> joinedDimensions)
+        {
+            var query = new StringBuilder();
+            query.Append($"{Environment.NewLine}WHERE");
+            var whereConditions = new HashSet<string>();
+            foreach (var table in joinedDimensions)
+            {
+                whereConditions.Add(
+                    $"{fTable.SqlName.Value}.{table.FactTableAttributeSqlName} = {table.DimTableSqlName}.{table.DimTableAttributeSqlName}");
+            }
+            var wherePart = string.Join($"{Environment.NewLine}  AND\t", whereConditions);
+            query.Append($"\t{wherePart}");
+            return query.ToString();
+        }
+
+        private static string GenerateSqlFromPart(TableMetadata fTable, HashSet<Dimension> joinedDimensions)
+        {
+            var query = new StringBuilder();
+            query.Append($"{Environment.NewLine}FROM");
+            var fromTables = new HashSet<string>(joinedDimensions.Select(d => d.DimTableSqlName)) {fTable.SqlName.Value};
+            var fromPart = string.Join($"{Environment.NewLine}\t,", fromTables);
+            query.Append($"\t {fromPart}");
+            return query.ToString();
+        }
+
+        private static string GenerateSqlSelectPart(IEnumerable<Measurement> measurements, IEnumerable<Dimension> dimensions, 
+            TableMetadata fTable, out HashSet<Dimension> joinedDimensions)
+        {
+            joinedDimensions = new HashSet<Dimension>();
+            var query = new StringBuilder();
             var selectList = new List<string>();
             foreach (var m in measurements)
             {
-                selectList.Add($"{m.AggrFunMetadata.Name.Value}({fTable.SqlName.Value}.{m.AttributeMetadata.SqlName.Value}) AS '{m.AttributeAggrFunName.Value}'");
-                //joinedTables.Add(m.TableMetadata);
+                selectList.Add(
+                    $"{m.AggrFunMetadata.Name.Value}({fTable.SqlName.Value}.{m.AttributeMetadata.SqlName.Value}) AS '{m.AttributeAggrFunName.Value}'");
             }
 
+            foreach (var d in dimensions)
+            {
+                selectList.Add(
+                    $"{d.DimTableSqlName}.{d.TableAttributeMetadata.SqlName.Value} AS '{d.TableAttributeMetadata.Name.Value}'");
+                joinedDimensions.Add(d);
+            }
+            
             var selectPart = string.Join($"{Environment.NewLine}\t,", selectList);
             query.Append($"\t {selectPart}");
-
-            // FROM part
-            query.AppendLine($"{Environment.NewLine}FROM\t {fTable.SqlName.Value}");
-            var fromPart = string.Join($"{Environment.NewLine}\t,", joinedTables.Select(t => t.SqlName.Value));
-            query.Append($"\t {fromPart}");
 
             return query.ToString();
         }
 
         private IEnumerable<Dimension> GetDimensions()
         {
-            return new List<Dimension>(); // todo
+            var dimensions = new List<Dimension>();
+            foreach (TreeNode nodeDimension in factDimControl.dimensionsTreeView.Nodes)
+            {
+                foreach (DimensionTreeNode node in nodeDimension.Nodes)
+                {
+                    if (!node.Checked) continue;
+                    dimensions.Add(node.Dimension);
+                }
+            }
+            return dimensions;
         }
 
         private IEnumerable<Measurement> GetMeasurements()

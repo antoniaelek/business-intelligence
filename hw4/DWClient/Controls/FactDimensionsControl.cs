@@ -55,7 +55,7 @@ namespace DWClient.Controls
                 int i = 0;
                 foreach (var dimAttr in dimension)
                 {
-                    nodes[i++] = new TreeNode(dimAttr.TableAttributeMetadata.Name.Value);
+                    nodes[i++] = new DimensionTreeNode(dimAttr, dimAttr.TableAttributeMetadata.Name.Value);
                 }
                 dimensionsTreeView.Nodes.Add(new TreeNode(dimension.Key, nodes));
             }

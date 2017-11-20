@@ -41,7 +41,7 @@
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(438, 28);
             this.button1.TabIndex = 0;
-            this.button1.Text = "Generate sql query";
+            this.button1.Text = "Run query";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 

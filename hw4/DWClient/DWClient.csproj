@@ -80,6 +80,7 @@
     <Compile Include="Controls\SqlControl.Designer.cs">
       <DependentUpon>SqlControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="DimensionTreeNode.cs" />
     <EmbeddedResource Include="Controls\FactDimensionsControl.resx">
       <DependentUpon>FactDimensionsControl.cs</DependentUpon>
     </EmbeddedResource>
