@@ -33,6 +33,11 @@ namespace DWClient.Controls
             RefreshPanels();
         }
 
+        private void dimensionsTreeView_AfterCheck(object sender, TreeViewEventArgs e)
+        {
+            CheckTreeViewNode(e.Node, e.Node.Checked);
+        }
+
         private void RefreshPanels()
         {
             var selectedObject = (fTablesComboBox.SelectedItem as ComboBoxItem)?.Value as TableMetadata;
@@ -68,11 +73,6 @@ namespace DWClient.Controls
             {
                 measuresCheckedListBox.Items.Add(new ListBoxItem(measurement.AttributeAggrFunName.Value, measurement));
             }
-        }
-
-        private void dimensionsTreeView_AfterCheck(object sender, TreeViewEventArgs e)
-        {
-            CheckTreeViewNode(e.Node, e.Node.Checked);
         }
 
         private void CheckTreeViewNode(TreeNode node, bool isChecked)

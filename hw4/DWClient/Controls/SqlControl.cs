@@ -29,6 +29,8 @@ namespace DWClient.Controls
 
             // Generate sql query
             textBox1.Clear();
+            resultsControl.dataGridView1.Columns.Clear();
+            resultsControl.dataGridView1.Rows.Clear();
             var query = GenerateSqlQuery(fTable, measurements, dimensions);
             
             if (query == null) return;
