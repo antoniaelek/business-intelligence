@@ -94,5 +94,10 @@ namespace DWClient
             m.AttributeAggrFunName.Value = result[m.AttributeAggrFunName.SqlName];
             return m;
         }
+
+        public IEnumerable<TypedDatabaseResult> ExecuteQuery(string query)
+        {
+            return connectionString.GetTypedTableData(query);
+        }
     }
 }

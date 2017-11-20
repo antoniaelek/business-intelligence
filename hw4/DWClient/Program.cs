@@ -25,17 +25,27 @@ namespace DWClient
             // Create form controls
             var factsDimensionsControl = new FactDimensionsControl(Framework)
                 {
-                    Anchor = AnchorStyles.Right | AnchorStyles.Left | AnchorStyles.Top
-                };
+                    Anchor = AnchorStyles.Right | AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Bottom
+            };
 
-            var sqlControl = new SqlControl(factsDimensionsControl)
+            var resultsControl = new ResultsControl()
+            {
+                Anchor = AnchorStyles.Right | AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Bottom,
+                Dock = DockStyle.Fill
+            };
+
+            var sqlControl = new SqlControl(factsDimensionsControl, resultsControl, Framework)
             {
                 Anchor = AnchorStyles.Right | AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Bottom
             };
 
+
+
             // Add controls to main form
-            form.splitContainer1.Panel1.Controls.Add(factsDimensionsControl);
-            form.splitContainer1.Panel2.Controls.Add(sqlControl);
+            form.splitContainerInner.Panel1.Controls.Add(factsDimensionsControl);
+            form.splitContainerInner.Panel2.Controls.Add(sqlControl);
+            form.splitContainerOuter.Panel2.Controls.Add(resultsControl);
+            form.splitContainerOuter.BorderStyle = BorderStyle.FixedSingle;
             Application.Run(form);
         }
     }

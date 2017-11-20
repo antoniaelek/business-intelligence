@@ -47,6 +47,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\ResultsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ResultsControl.Designer.cs">
+      <DependentUpon>ResultsControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\AggregateFunctionMetadata.cs" />
     <Compile Include="Models\AttributeMetadata.cs" />
     <Compile Include="ComboBoxItem.cs" />
@@ -87,6 +93,9 @@
     <EmbeddedResource Include="Controls\Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ResultsControl.resx">
+      <DependentUpon>ResultsControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -99,6 +108,7 @@
     <EmbeddedResource Include="Controls\SqlControl.resx">
       <DependentUpon>SqlControl.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="Properties\DataSources\DWClient.Models.TypedDatabaseResult.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

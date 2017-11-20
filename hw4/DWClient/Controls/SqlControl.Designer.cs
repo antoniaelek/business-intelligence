@@ -39,7 +39,7 @@
             this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button1.Location = new System.Drawing.Point(10, 2);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(438, 28);
+            this.button1.Size = new System.Drawing.Size(478, 28);
             this.button1.TabIndex = 0;
             this.button1.Text = "Run query";
             this.button1.UseVisualStyleBackColor = true;
@@ -51,11 +51,12 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBox1.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBox1.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBox1.Location = new System.Drawing.Point(10, 38);
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(438, 119);
+            this.textBox1.Size = new System.Drawing.Size(478, 119);
             this.textBox1.TabIndex = 1;
             this.textBox1.Text = "";
             // 
@@ -66,7 +67,7 @@
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.button1);
             this.Name = "SqlControl";
-            this.Size = new System.Drawing.Size(460, 161);
+            this.Size = new System.Drawing.Size(500, 161);
             this.ResumeLayout(false);
 
         }

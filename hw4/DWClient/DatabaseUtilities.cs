@@ -40,7 +40,7 @@ namespace DWClient
             return results;
         }
 
-        public static string[] GetColumns(string query)
+        public static string[] GetColumns(this string query)
         {
             var startSequence = "SELECT";
             var endSequence = "FROM";

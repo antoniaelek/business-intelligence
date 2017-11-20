@@ -10,9 +10,14 @@ namespace DWClient.Controls
     public partial class SqlControl : UserControl
     {
         private readonly FactDimensionsControl factDimControl;
-        public SqlControl(FactDimensionsControl factDimControl)
+        private readonly ResultsControl resultsControl;
+        private readonly DWMetadataFramework framework;
+
+        public SqlControl(FactDimensionsControl factDimControl, ResultsControl resultsControl, DWMetadataFramework framework)
         {
             this.factDimControl = factDimControl;
+            this.resultsControl = resultsControl;
+            this.framework = framework;
             InitializeComponent();
         }
 
@@ -21,23 +26,65 @@ namespace DWClient.Controls
             var fTable = (factDimControl.fTablesComboBox.SelectedItem as ComboBoxItem)?.Value as TableMetadata;
             var measurements = GetMeasurements();
             var dimensions = GetDimensions();
+
+            // Generate sql query
             var query = GenerateSqlQuery(fTable, measurements, dimensions);
             textBox1.Text = query;
+
+            // Execute sql query
+            var result = framework.ExecuteQuery(query);
+
+            // Display results
+            DisplayResults(query, result);
+        }
+
+        private void DisplayResults(string query, IEnumerable<TypedDatabaseResult> result)
+        {
+            resultsControl.dataGridView1.Columns.Clear();
+            resultsControl.dataGridView1.Rows.Clear();
+
+            var columns = query.GetColumns().Select(c => new {colName = c, colAlias = GetAlias(c)}).ToList();
+            foreach (var col in columns)
+            {
+                resultsControl.dataGridView1.Columns.Add(col.colName, col.colAlias);
+            }
+
+            foreach (var row in result)
+            {
+                var gridRow = new object[columns.Count];
+                var i = 0;
+                foreach (var column in columns)
+                {
+                    gridRow[i++] = row.Row[column.colName];
+                }
+                resultsControl.dataGridView1.Rows.Add(gridRow);
+            }
+
+            resultsControl.dataGridView1.Refresh();
+        }
+
+        private string GetAlias(string selectQueryPart)
+        {
+            var name = selectQueryPart.Substring(selectQueryPart.LastIndexOf(' ') + 1).Trim();
+            var startIdx = name.IndexOf('\'');
+            var endIdx = name.LastIndexOf('\'');
+            return name.Substring(startIdx+1, endIdx - startIdx-1);
         }
 
         private string GenerateSqlQuery(TableMetadata fTable, IEnumerable<Measurement> measurements, IEnumerable<Dimension> dimensions)
         {
             var query = new StringBuilder("SELECT");
-            HashSet<Dimension> joinedDimensions;
+            var dims = dimensions as IList<Dimension> ?? dimensions.ToList();
+            var dinstinctDimensions = new HashSet<Dimension>(dims);
 
             // SELECT part
-            query.Append(GenerateSqlSelectPart(measurements, dimensions, fTable, out joinedDimensions));
+            query.Append(GenerateSqlSelectPart(measurements, dims, fTable));
 
             // FROM part
-            query.Append(GenerateSqlFromPart(fTable, joinedDimensions));
+            query.Append(GenerateSqlFromPart(fTable, dinstinctDimensions));
 
             // WHERE PART
-            query.Append(GenerateSqlWherePart(fTable, joinedDimensions));
+            query.Append(GenerateSqlWherePart(fTable, dinstinctDimensions));
 
             return query.ToString();
         }
@@ -68,9 +115,8 @@ namespace DWClient.Controls
         }
 
         private static string GenerateSqlSelectPart(IEnumerable<Measurement> measurements, IEnumerable<Dimension> dimensions, 
-            TableMetadata fTable, out HashSet<Dimension> joinedDimensions)
+            TableMetadata fTable)
         {
-            joinedDimensions = new HashSet<Dimension>();
             var query = new StringBuilder();
             var selectList = new List<string>();
             foreach (var m in measurements)
@@ -81,9 +127,7 @@ namespace DWClient.Controls
 
             foreach (var d in dimensions)
             {
-                selectList.Add(
-                    $"{d.DimTableSqlName}.{d.TableAttributeMetadata.SqlName.Value} AS '{d.TableAttributeMetadata.Name.Value}'");
-                joinedDimensions.Add(d);
+                selectList.Add($"{d.DimTableSqlName}.{d.TableAttributeMetadata.SqlName.Value} AS '{d.TableAttributeMetadata.Name.Value}'");
             }
             
             var selectPart = string.Join($"{Environment.NewLine}\t,", selectList);
