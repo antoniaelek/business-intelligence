@@ -25,7 +25,6 @@ namespace DWClient.Controls
             {
                 fTablesComboBox.Items.Add(new ComboBoxItem(fTable.Name.Value, fTable));
             }
-            fTablesComboBox.SelectedIndex = 0;
             RefreshPanels();
         }
 
