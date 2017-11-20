@@ -47,7 +47,7 @@
             this.splitContainerInner.Location = new System.Drawing.Point(3, 3);
             this.splitContainerInner.Name = "splitContainerInner";
             this.splitContainerInner.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            this.splitContainerInner.Size = new System.Drawing.Size(502, 483);
+            this.splitContainerInner.Size = new System.Drawing.Size(451, 483);
             this.splitContainerInner.SplitterDistance = 318;
             this.splitContainerInner.TabIndex = 0;
             // 
@@ -63,7 +63,7 @@
             // 
             this.splitContainerOuter.Panel1.Controls.Add(this.splitContainerInner);
             this.splitContainerOuter.Size = new System.Drawing.Size(908, 489);
-            this.splitContainerOuter.SplitterDistance = 508;
+            this.splitContainerOuter.SplitterDistance = 457;
             this.splitContainerOuter.TabIndex = 1;
             // 
             // Form1

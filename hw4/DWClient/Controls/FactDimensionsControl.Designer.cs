@@ -53,7 +53,7 @@
             this.fTablesComboBox.FormattingEnabled = true;
             this.fTablesComboBox.Location = new System.Drawing.Point(10, 30);
             this.fTablesComboBox.Name = "fTablesComboBox";
-            this.fTablesComboBox.Size = new System.Drawing.Size(480, 21);
+            this.fTablesComboBox.Size = new System.Drawing.Size(430, 21);
             this.fTablesComboBox.TabIndex = 0;
             this.fTablesComboBox.SelectionChangeCommitted += new System.EventHandler(this.comboBoxFactTables_SelectionChangeCommitted);
             // 
@@ -77,7 +77,7 @@
             this.measuresCheckedListBox.FormattingEnabled = true;
             this.measuresCheckedListBox.Location = new System.Drawing.Point(6, 13);
             this.measuresCheckedListBox.Name = "measuresCheckedListBox";
-            this.measuresCheckedListBox.Size = new System.Drawing.Size(226, 195);
+            this.measuresCheckedListBox.Size = new System.Drawing.Size(201, 195);
             this.measuresCheckedListBox.TabIndex = 2;
             // 
             // dimensionsTreeView
@@ -89,7 +89,7 @@
             this.dimensionsTreeView.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dimensionsTreeView.Location = new System.Drawing.Point(6, 13);
             this.dimensionsTreeView.Name = "dimensionsTreeView";
-            this.dimensionsTreeView.Size = new System.Drawing.Size(228, 195);
+            this.dimensionsTreeView.Size = new System.Drawing.Size(203, 195);
             this.dimensionsTreeView.TabIndex = 4;
             this.dimensionsTreeView.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.dimensionsTreeView_AfterCheck);
             // 
@@ -110,8 +110,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.dimensionsTreeView);
-            this.splitContainer1.Size = new System.Drawing.Size(480, 229);
-            this.splitContainer1.SplitterDistance = 237;
+            this.splitContainer1.Size = new System.Drawing.Size(430, 229);
+            this.splitContainer1.SplitterDistance = 212;
             this.splitContainer1.TabIndex = 6;
             // 
             // splitContainer2
@@ -130,8 +130,8 @@
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.label2);
-            this.splitContainer2.Size = new System.Drawing.Size(480, 27);
-            this.splitContainer2.SplitterDistance = 237;
+            this.splitContainer2.Size = new System.Drawing.Size(430, 27);
+            this.splitContainer2.SplitterDistance = 212;
             this.splitContainer2.TabIndex = 7;
             // 
             // label3
@@ -163,7 +163,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.fTablesComboBox);
             this.Name = "FactDimensionsControl";
-            this.Size = new System.Drawing.Size(500, 321);
+            this.Size = new System.Drawing.Size(450, 321);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
