@@ -10,6 +10,7 @@ namespace DWClient.Controls
     {
         private readonly DWMetadataFramework framework;
         private IEnumerable<TableMetadata> fTables;
+        public SqlControl SqlControl { get; set; }
 
         public FactDimensionsControl(DWMetadataFramework framework)
         {
@@ -20,10 +21,17 @@ namespace DWClient.Controls
 
         private void Fill()
         {
-            fTables = framework.GetFactTables();
-            foreach (var fTable in fTables)
+            try
             {
-                fTablesComboBox.Items.Add(new ComboBoxItem(fTable.Name.Value, fTable));
+                fTables = framework.GetFactTables();
+                foreach (var fTable in fTables)
+                {
+                    fTablesComboBox.Items.Add(new ComboBoxItem(fTable.Name.Value, fTable));
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($@"{e.Message}", string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
             }
             RefreshPanels();
         }
@@ -38,11 +46,27 @@ namespace DWClient.Controls
             CheckTreeViewNode(e.Node, e.Node.Checked);
         }
 
+        private void measuresCheckedListBox_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            var checkedItems = new List<object>();
+            foreach (var item in measuresCheckedListBox.CheckedItems)
+                checkedItems.Add(item);
+
+            if (e.NewValue == CheckState.Checked)
+                checkedItems.Add(measuresCheckedListBox.Items[e.Index]);
+            else if (e.NewValue == CheckState.Unchecked)
+                checkedItems.Remove(measuresCheckedListBox.Items[e.Index]);
+
+            var query = GetSqlQuery(checkedItems);
+            SqlControl.SetQuery(query);
+        }
+
         private void RefreshPanels()
         {
             var selectedObject = (fTablesComboBox.SelectedItem as ComboBoxItem)?.Value as TableMetadata;
             if (selectedObject == null) return;
 
+            SqlControl.SetQuery(string.Empty);
             RefreshMeasurements(selectedObject);
             RefreshDimensions(selectedObject);
         }
@@ -86,6 +110,59 @@ namespace DWClient.Controls
                     CheckTreeViewNode(item, isChecked);
                 }
             }
+
+            SqlControl.SetQuery(GetSqlQuery());
+        }
+
+        public IEnumerable<Dimension> GetDimensions()
+        {
+            var dimensions = new List<Dimension>();
+            foreach (TreeNode nodeDimension in dimensionsTreeView.Nodes)
+            {
+                foreach (DimensionTreeNode node in nodeDimension.Nodes)
+                {
+                    if (!node.Checked) continue;
+                    dimensions.Add(node.Dimension);
+                }
+            }
+            return dimensions;
+        }
+
+        public IEnumerable<Dimension> GetDimensions(List<object> checkedDimensions)
+        {
+            return checkedDimensions.Select(d => d as Dimension);
+        }
+
+        public IEnumerable<Measurement> GetMeasurements()
+        {
+            var measurements = new List<Measurement>(measuresCheckedListBox.CheckedItems.Count);
+            foreach (var checkedItem in measuresCheckedListBox.CheckedItems)
+            {
+                measurements.Add((checkedItem as ListBoxItem)?.Value as Measurement);
+            }
+            return measurements;
+        }
+
+        public IEnumerable<Measurement> GetMeasurements(List<object> checkedMeasurements)
+        {
+            var measurements = new List<Measurement>(measuresCheckedListBox.CheckedItems.Count);
+            foreach (var checkedItem in checkedMeasurements)
+            {
+                measurements.Add((checkedItem as ListBoxItem)?.Value as Measurement);
+            }
+            return measurements;
+        }
+
+        public string GetSqlQuery(List<object> checkedMeasurements = null, List<object> checkedDimensions = null)
+        {
+            var fTable = (fTablesComboBox.SelectedItem as ComboBoxItem)?.Value as TableMetadata;
+
+            // Get data
+            var measurements = checkedMeasurements == null ? GetMeasurements() : GetMeasurements(checkedMeasurements);
+            var dimensions = checkedDimensions == null ? GetDimensions() : GetDimensions(checkedDimensions);
+
+            // Display sql query
+            return DWMetadataFramework.GenerateSqlQuery(fTable, measurements, dimensions);
         }
     }
 }

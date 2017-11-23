@@ -39,7 +39,7 @@ namespace DWClient
                 Anchor = AnchorStyles.Right | AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Bottom
             };
 
-
+            factsDimensionsControl.SqlControl = sqlControl;
 
             // Add controls to main form
             form.splitContainerInner.Panel1.Controls.Add(factsDimensionsControl);

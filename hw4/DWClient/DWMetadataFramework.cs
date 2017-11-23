@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using DWClient.Models;
 
 namespace DWClient
@@ -98,6 +100,103 @@ namespace DWClient
         public IEnumerable<TypedDatabaseResult> ExecuteQuery(string query)
         {
             return connectionString.GetTypedTableData(query);
+        }
+
+        public static string GenerateSqlQuery(TableMetadata fTable, IEnumerable<Measurement> measurements, IEnumerable<Dimension> dimensions)
+        {
+            var query = new StringBuilder();
+            var dims = dimensions as IList<Dimension> ?? dimensions.ToList();
+            var dinstinctDimensions = new HashSet<Dimension>(dims);
+
+            // SELECT part
+            var selectPart = GenerateSqlSelectPart(measurements, dims, fTable);
+            if (string.IsNullOrWhiteSpace(selectPart))
+                return null;
+
+            query.Append($"SELECT {selectPart}");
+
+            // FROM part
+            var fromPart = GenerateSqlFromPart(fTable, dinstinctDimensions);
+            query.Append(string.IsNullOrWhiteSpace(fromPart) ? string.Empty : $"{Environment.NewLine}FROM\t{fromPart}");
+
+            // WHERE PART
+            var wherePart = GenerateSqlWherePart(fTable, dinstinctDimensions);
+            query.Append(string.IsNullOrWhiteSpace(wherePart) ? string.Empty : $"{Environment.NewLine}WHERE\t{wherePart}");
+
+            // GROUP BY part
+            var groupByPart = GenerateSqlGroupByPart(dims);
+            query.Append(string.IsNullOrWhiteSpace(groupByPart) ? string.Empty : $"{Environment.NewLine}GROUP BY {groupByPart}");
+
+            return query.ToString();
+        }
+
+        private static string GenerateSqlWherePart(TableMetadata fTable, HashSet<Dimension> joinedDimensions)
+        {
+            var query = new StringBuilder();
+            var whereConditions = new HashSet<string>();
+            foreach (var table in joinedDimensions)
+            {
+                whereConditions.Add(
+                    $"{fTable.SqlName.Value}.{table.FactTableAttributeSqlName} = {table.DimTableSqlName}.{table.DimTableAttributeSqlName}");
+            }
+            var wherePart = string.Join($"{Environment.NewLine}  AND\t", whereConditions);
+            query.Append($"{wherePart}");
+            return query.ToString();
+        }
+
+        private static string GenerateSqlFromPart(TableMetadata fTable, HashSet<Dimension> joinedDimensions)
+        {
+            var query = new StringBuilder();
+            var fromTables = new HashSet<string>(joinedDimensions.Select(d => d.DimTableSqlName)) { fTable.SqlName.Value };
+            var fromPart = string.Join($"{Environment.NewLine}\t,", fromTables);
+            query.Append($" {fromPart}");
+            return query.ToString();
+        }
+
+        private static string GenerateSqlSelectPart(IEnumerable<Measurement> measurements, IEnumerable<Dimension> dimensions,
+            TableMetadata fTable)
+        {
+            var query = new StringBuilder();
+            var selectList = new List<string>();
+            foreach (var m in measurements)
+            {
+                selectList.Add(
+                    $"{m.AggrFunMetadata.Name.Value}({fTable.SqlName.Value}.{m.AttributeMetadata.SqlName.Value}) AS '{m.AttributeAggrFunName.Value}'");
+            }
+
+            foreach (var d in dimensions)
+            {
+                selectList.Add($"{d.DimTableSqlName}.{d.TableAttributeMetadata.SqlName.Value} AS '{d.TableAttributeMetadata.Name.Value}'");
+            }
+
+            var selectPart = string.Join($"{Environment.NewLine}\t,", selectList);
+            query.Append($" {selectPart}");
+
+            return query.ToString();
+        }
+
+        private static string GenerateSqlGroupByPart(IEnumerable<Dimension> dimensions)
+        {
+            var query = new StringBuilder();
+            var list = new List<string>();
+            foreach (var d in dimensions)
+            {
+                list.Add($"{d.DimTableSqlName}.{d.TableAttributeMetadata.SqlName.Value}");
+            }
+
+            var part = string.Join($"{Environment.NewLine}\t,", list);
+            query.Append($"{part}");
+
+            return query.ToString();
+        }
+
+        public static string GetAlias(string selectQueryPart)
+        {
+            var startIdx = selectQueryPart.IndexOf('\'');
+            var endIdx = selectQueryPart.LastIndexOf('\'');
+            if (startIdx == endIdx)
+                return selectQueryPart;
+            return selectQueryPart.Substring(startIdx + 1, endIdx - startIdx - 1);
         }
     }
 }

@@ -79,6 +79,7 @@
             this.measuresCheckedListBox.Name = "measuresCheckedListBox";
             this.measuresCheckedListBox.Size = new System.Drawing.Size(201, 195);
             this.measuresCheckedListBox.TabIndex = 2;
+            this.measuresCheckedListBox.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.measuresCheckedListBox_ItemCheck);
             // 
             // dimensionsTreeView
             // 

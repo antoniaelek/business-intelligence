@@ -38,9 +38,9 @@ namespace DWClient
                         }
                     }
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-                    return new List<TypedDatabaseResult>();
+                    throw new Exception($"Error getting results from database: {e.Message}",  e);
                 }
             }
 
