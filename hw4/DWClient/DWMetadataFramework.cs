@@ -158,15 +158,16 @@ namespace DWClient
         {
             var query = new StringBuilder();
             var selectList = new List<string>();
-            foreach (var m in measurements)
-            {
-                selectList.Add(
-                    $"{m.AggrFunMetadata.Name.Value}({fTable.SqlName.Value}.{m.AttributeMetadata.SqlName.Value}) AS '{m.AttributeAggrFunName.Value}'");
-            }
 
             foreach (var d in dimensions)
             {
                 selectList.Add($"{d.DimTableSqlName}.{d.TableAttributeMetadata.SqlName.Value} AS '{d.TableAttributeMetadata.Name.Value}'");
+            }
+
+            foreach (var m in measurements)
+            {
+                selectList.Add(
+                    $"{m.AggrFunMetadata.Name.Value}({fTable.SqlName.Value}.{m.AttributeMetadata.SqlName.Value}) AS '{m.AttributeAggrFunName.Value}'");
             }
 
             var selectPart = string.Join($"{Environment.NewLine}\t,", selectList);
